@@ -13,7 +13,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
-public abstract class AbstractDBpediaClass {
+public class DBpediaClass {
   private static final String query_count =
       "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
           + "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
@@ -32,18 +32,18 @@ public abstract class AbstractDBpediaClass {
   private static final Property rdfsLabel =
       ResourceFactory.createProperty("http://www.w3.org/2000/01/rdf-schema#label");
 
-  public void addDataToBlazegraph(RDFStore store) {
-    int count = selectCount();
+  public static void addDataToBlazegraph(RDFStore store, DBpediaEnum dbenum) {
+    int count = selectCount(dbenum.getType());
     System.out.println(count);
     for (int i = 0; i < count; i += 10000) {
       System.out.println(i);
-      Model model = selectData(String.valueOf(i));
+      Model model = selectData(String.valueOf(i), dbenum);
       store.save("default", model);
     }
   }
   
-  private int selectCount() {
-    QueryExecution qexec = qeSelect(query_count.replace("${type}", getType()));
+  private static int selectCount(String type) {
+    QueryExecution qexec = qeSelect(query_count.replace("${type}", type));
     try {
       ResultSet res = qexec.execSelect();
       while (res != null && res.hasNext()) {
@@ -56,10 +56,10 @@ public abstract class AbstractDBpediaClass {
     return 0;
   }
 
-  private Model selectData(String offset) {
+  private static Model selectData(String offset, DBpediaEnum dbenum) {
     int i = 1;
     QueryExecution qexec =
-        qeSelect(query_data.replace("${OFFSET}", offset).replace("${type}", getType()));
+        qeSelect(query_data.replace("${OFFSET}", offset).replace("${type}", dbenum.getType()));
     try {
       ResultSet results = qexec.execSelect();
       if (results != null) {
@@ -68,7 +68,7 @@ public abstract class AbstractDBpediaClass {
           QuerySolution qs = results.next();
           String uri = qs.get(KEY_RES).asResource().getURI();
           String label = qs.get(KEY_LABEL).asLiteral().getString();
-          addRecToModel(model, uri, label);
+          addRecToModel(model, uri, label, dbenum.getPropertyType());
           System.out.println(String.valueOf(i++) + uri + "  " + label);
         }
         return model;
@@ -79,20 +79,17 @@ public abstract class AbstractDBpediaClass {
     return null;
   }
 
-  private void addRecToModel(Model model, String uri, String label) {
+  private static void addRecToModel(Model model, String uri, String label, Resource propertyType) {
     Resource uriResource = ResourceFactory.createResource(uri);
     model.add(uriResource, 
         rdfType,
-        getPropertyType());
+        propertyType);
     model.add(uriResource,
         rdfsLabel,
         ResourceFactory.createPlainLiteral(label));
   }
-  
-   public abstract Resource getPropertyType();
-   public abstract String getType();
 
-  private QueryExecution qeSelect(String queryStr) {
+  private static QueryExecution qeSelect(String queryStr) {
     Query query = QueryFactory.create(queryStr);
     return QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
   }
