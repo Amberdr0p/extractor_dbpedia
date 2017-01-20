@@ -41,7 +41,7 @@ public class DBpediaClass {
       store.save("default", model);
     }
   }
-  
+
   private static int selectCount(String type) {
     QueryExecution qexec = qeSelect(query_count.replace("${type}", type));
     try {
@@ -81,12 +81,8 @@ public class DBpediaClass {
 
   private static void addRecToModel(Model model, String uri, String label, Resource propertyType) {
     Resource uriResource = ResourceFactory.createResource(uri);
-    model.add(uriResource, 
-        rdfType,
-        propertyType);
-    model.add(uriResource,
-        rdfsLabel,
-        ResourceFactory.createPlainLiteral(label));
+    model.add(uriResource, rdfType, propertyType);
+    model.add(uriResource, rdfsLabel, ResourceFactory.createPlainLiteral(label));
   }
 
   private static QueryExecution qeSelect(String queryStr) {

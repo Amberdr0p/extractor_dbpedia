@@ -13,7 +13,6 @@ public class Launcher {
   
   public static void main(String[] args) {
     RDFStore store = new RDFStore();
-    
     DBpediaClass.addDataToBlazegraph(store, DBpediaEnum.ANIMAL);
     
     /* Если надо пройтись по всем
