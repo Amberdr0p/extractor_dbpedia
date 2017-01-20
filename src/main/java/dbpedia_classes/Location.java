@@ -7,6 +7,7 @@ public class Location extends AbstractDBpediaClass {
 
   /*
    * взяли только класс dbo:Location (<http://dbpedia.org/ontology/Location>)
+   * 130к
    */
   
   private static final Resource typeProperty =

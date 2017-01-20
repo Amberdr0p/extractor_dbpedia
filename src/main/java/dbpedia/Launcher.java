@@ -1,7 +1,8 @@
 package dbpedia;
 
+
 import dbpedia_classes.AbstractDBpediaClass;
-import dbpedia_classes.Thing;
+import dbpedia_classes.Organisation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,10 @@ public class Launcher {
     RDFStore store = new RDFStore();
     
     // list.add(new Location());
-    list.add(new Thing());
+    // list.add(new Thing());
+    // list.add(new Person());
+    list.add(new Organisation());
+    
     
     for(AbstractDBpediaClass adbc : list) {
       adbc.addDataToBlazegraph(store);
