@@ -14,12 +14,12 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
 public class DBpediaClass {
-  private static final String query_count =
+  private static final String QUERY_COUNT =
       "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
           + "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
           + "select (count(?label) as ?count) "
           + "where {?res rdf:type ${type}. ?res rdfs:label ?label.FILTER (lang(?label) = 'ru')}";
-  private static final String query_data = "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+  private static final String QUERY_DATA = "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
       + "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + "select ?res ?label "
       + "where {" + "?res rdf:type ${type}." + " ?res rdfs:label ?label."
       + "FILTER (lang(?label) = 'ru') } LIMIT 10000 OFFSET ${OFFSET}";
@@ -43,7 +43,7 @@ public class DBpediaClass {
   }
 
   private static int selectCount(String type) {
-    QueryExecution qexec = qeSelect(query_count.replace("${type}", type));
+    QueryExecution qexec = qeSelect(QUERY_COUNT.replace("${type}", type));
     try {
       ResultSet res = qexec.execSelect();
       while (res != null && res.hasNext()) {
@@ -59,7 +59,7 @@ public class DBpediaClass {
   private static Model selectData(String offset, DBpediaEnum dbenum) {
     int i = 1;
     QueryExecution qexec =
-        qeSelect(query_data.replace("${OFFSET}", offset).replace("${type}", dbenum.getType()));
+        qeSelect(QUERY_DATA.replace("${OFFSET}", offset).replace("${type}", dbenum.getType()));
     try {
       ResultSet results = qexec.execSelect();
       if (results != null) {

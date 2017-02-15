@@ -21,7 +21,7 @@ public class RDFStore {
    * "http://winghouse.semiot.ru:3030/blazegraph/sparql"; private static final String
    * TRIPLESTORE_USERNAME = "admin"; private static final String TRIPLESTORE_PASSWORD = "pw";
    */
-  
+
   private final HttpAuthenticator httpAuthenticator;
   private final PublishSubject<Model> ps = PublishSubject.create();
 
